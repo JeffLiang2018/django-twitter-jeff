@@ -1,6 +1,13 @@
 *.box
 .vagrant
 Vagrantfile
+media/
+hbase-2.4.4/
+.DS_Store
+jdk-8u291-linux-x64.tar.gz
+hbase-2.4.4-bin.tar.gz
+thrift-0.14.2.tar.gz
+thrift-0.14.2/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -131,8 +138,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
-# IDEA Pycharm
-.idea/
-
-bionic64.box
+/.pycharm_helpers/
+.idea
