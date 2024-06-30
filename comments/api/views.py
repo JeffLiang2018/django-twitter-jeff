@@ -1,5 +1,5 @@
 from rest_framework import viewsets, status
-from rest_framework.permissions import IsAuthenticated, AllowAny, IsObjectOwner
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
 from comments.api.serializers import (
@@ -9,6 +9,7 @@ from comments.api.serializers import (
 )
 from comments.models import Comment
 from utils.decorators import required_params
+from comments.api.permissions import IsObjectOwner
 
 
 class CommentViewSet(viewsets.GenericViewSet):
