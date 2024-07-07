@@ -182,72 +182,8 @@ class LikeApiTests(TestCase):
         # test tweets list api
         response = self.dongxie_client.get(TWEET_LIST_API, {'user_id': self.linghu.id})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data['tweets'][0]['has_liked'], True)
-        self.assertEqual(response.data['tweets'][0]['likes_count'], 1)
-
-        # test newsfeeds list api
-        self.create_like(self.linghu, tweet)
-        self.create_newsfeed(self.dongxie, tweet)
-        response = self.dongxie_client.get(NEWSFEED_LIST_API)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data['newsfeeds'][0]['tweet']['has_liked'], True)
-        self.assertEqual(response.data['newsfeeds'][0]['tweet']['likes_count'], 2)
-
-        # test likes details
-        url = TWEET_DETAIL_API.format(tweet.id)
-        response = self.dongxie_client.get(url)
-        self.assertEqual(len(response.data['likes']), 2)
-        self.assertEqual(response.data['likes'][0]['user']['id'], self.linghu.id)
-        self.assertEqual(response.data['likes'][1]['user']['id'], self.dongxie.id)
-
-    def test_likes_in_comments_api(self):
-        tweet = self.create_tweet(self.linghu)
-        comment = self.create_comment(self.linghu, tweet)
-
-        # test anonymous
-        anonymous_client = APIClient()
-        response = anonymous_client.get(COMMENT_LIST_API, {'tweet_id': tweet.id})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data['comments'][0]['has_liked'], False)
-        self.assertEqual(response.data['comments'][0]['likes_count'], 0)
-
-        # test comments list api
-        response = self.dongxie_client.get(COMMENT_LIST_API, {'tweet_id': tweet.id})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data['comments'][0]['has_liked'], False)
-        self.assertEqual(response.data['comments'][0]['likes_count'], 0)
-        self.create_like(self.dongxie, comment)
-        response = self.dongxie_client.get(COMMENT_LIST_API, {'tweet_id': tweet.id})
-        self.assertEqual(response.data['comments'][0]['has_liked'], True)
-        self.assertEqual(response.data['comments'][0]['likes_count'], 1)
-
-        # test tweet detail api
-        self.create_like(self.linghu, comment)
-        url = TWEET_DETAIL_API.format(tweet.id)
-        response = self.dongxie_client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data['comments'][0]['has_liked'], True)
-        self.assertEqual(response.data['comments'][0]['likes_count'], 2)
-
-    def test_likes_in_tweets_api(self):
-        tweet = self.create_tweet(self.linghu)
-
-        # test tweet detail api
-        url = TWEET_DETAIL_API.format(tweet.id)
-        response = self.dongxie_client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data['has_liked'], False)
-        self.assertEqual(response.data['likes_count'], 0)
-        self.create_like(self.dongxie, tweet)
-        response = self.dongxie_client.get(url)
-        self.assertEqual(response.data['has_liked'], True)
-        self.assertEqual(response.data['likes_count'], 1)
-
-        # test tweets list api
-        response = self.dongxie_client.get(TWEET_LIST_API, {'user_id': self.linghu.id})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data['tweets'][0]['has_liked'], True)
-        self.assertEqual(response.data['tweets'][0]['likes_count'], 1)
+        self.assertEqual(response.data['results'][0]['has_liked'], True)
+        self.assertEqual(response.data['results'][0]['likes_count'], 1)
 
         # test newsfeeds list api
         self.create_like(self.linghu, tweet)
