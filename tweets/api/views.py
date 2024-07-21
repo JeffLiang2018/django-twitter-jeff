@@ -39,15 +39,19 @@ class TweetViewSet(viewsets.GenericViewSet):
 
     @required_params(params=['user_id'])
     def list(self, request, *args, **kwargs):
-        # 这句查询会被翻译为
-        # select * from twitter_tweets
-        # where user_id = xxx
-        # order by created_at desc
-        # 这句 SQL 查询会用到 user 和 created_at 的联合索引
-        # 单纯的 user 索引是不够的
-        tweets = TweetService.get_cached_tweets(user_id=request.query_params['user_id'])
-        tweets = self.paginate_queryset(tweets)
-        serializer = TweetSerializer(tweets, many=True)
+        user_id = request.query_params['user_id']
+        cached_tweets = TweetService.get_cached_tweets(user_id)
+        page = self.paginator.paginate_cached_list(cached_tweets, request)
+        if page is None:
+            # 这句查询会被翻译为
+            # select * from twitter_tweets
+            # where user_id = xxx
+            # order by created_at desc
+            # 这句 SQL 查询会用到 user 和 created_at 的联合索引
+            # 单纯的 user 索引是不够的
+            queryset = Tweet.objects.filter(user_id=user_id).order_by('-created_at')
+            page = self.paginate_queryset(queryset)
+        serializer = TweetSerializer(page, context={'request': request}, many=True)
         return self.get_paginated_response(serializer.data)
 
     def create(self, request, *args, **kwargs):
